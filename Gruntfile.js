@@ -10,10 +10,12 @@ module.exports = function(grunt) {
         paths: {
             css_in: 'css/_scss/',
             css_out: 'css/',
+            js: 'js/',
 
             eleventy_src: 'src/',
             eleventy_files: 'files/',
             eleventy_css: 'css/',
+            eleventy_js: 'js/',
         },
 
         sass: {
@@ -31,14 +33,22 @@ module.exports = function(grunt) {
             options: {
                 sourceMap: true,
             },
-            add_banner: {
-                options: {
-                    noAdvanced: true,
-                    // needed to keep rgba(255, 255, 255, 0) from being converted to transparent
-                    compatibility: 'ie8',
+            target: {
+                src: ['<%= paths.css_out %>style.css'],
+                dest: '<%= paths.css_out %>style.min.css'
+            }
+        },
+        terser: {
+            options: {
+                ecma: 6,
+                sourceMap: true,
+                compress: {
+                    drop_console: true
                 },
-            files: {
-                    '<%= paths.css_out %>style.min.css': ['<%= paths.css_out %>style.css'],
+            },
+            target: {
+                files: {
+                    'js/scripts.min.js': ['js/scripts.js']
                 }
             }
         },
@@ -60,7 +70,6 @@ module.exports = function(grunt) {
                 ],
                 options: {
                     spawn: false,
-                    // livereload: true,
                 }
             },
             css: {
@@ -72,8 +81,19 @@ module.exports = function(grunt) {
                 ],
                 options: {
                     spawn: false,
-                    // livereload: true,
                 },
+            },
+            terser: {
+                files: [
+                    '<%= paths.js %>**/*.js',
+                    '!<%= paths.js %>**/*.min.js',
+                ],
+                tasks: [
+                    'sass'
+                ],
+                options: {
+                    spawn: false,
+                }
             },
             eleventy: {
                 files: [
@@ -83,7 +103,8 @@ module.exports = function(grunt) {
                     '<%= paths.eleventy_src %>**/*.md',
 
                     '<%= paths.eleventy_files %>**/*',
-                    '<%= paths.eleventy_css %>**/*'
+                    '<%= paths.eleventy_css %>**/*',
+                    '<%= paths.eleventy_js %>**/*'
                 ],
                 tasks: [
                     'eleventy'
@@ -98,6 +119,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('eleventy', ['shell:eleventy']);
 
-    grunt.registerTask('default', ['newer:sass', 'newer:cssmin', 'newer:shell:eleventy', 'watch']);
+    grunt.registerTask('default', ['newer:sass', 'newer:cssmin', 'newer:terser', 'newer:shell:eleventy', 'watch']);
     grunt.registerTask('build', ['sass', 'cssmin', 'eleventy']);
+    grunt.registerTask('build2', ['terser', 'sass', 'cssmin', 'eleventy']);
 };

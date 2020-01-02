@@ -6,6 +6,7 @@ module.exports = function(eleventyConfig) {
     // Copy files to dist
     eleventyConfig
         .addPassthroughCopy("css")
+        .addPassthroughCopy("js")
         .addPassthroughCopy("files");
 
     // Date filter (localized)
