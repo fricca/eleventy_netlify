@@ -1,3 +1,3 @@
 [build]
-  publish: "dist"
-  command: "grunt build2"
+  publish = "dist"
+  command = "grunt build2"
