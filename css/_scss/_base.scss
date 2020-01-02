@@ -1,0 +1,15 @@
+html,
+body {
+    color: $c-text;
+    background-color: $c-background;
+    font: 100%/1.5 sans-serif;
+}
+body {
+    padding: $m-base;
+}
+
+img,
+video {
+    max-width: 300px;
+    height: auto;
+}
